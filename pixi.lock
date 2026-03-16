@@ -96,9 +96,9 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/xorg-libxrender-0.9.12-hb9d3cd8_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/xxhash-0.8.3-hb47aa4a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb78ec9c_6.conda
-      - conda: ../packages/expected-lite
-      - conda: ../packages/slang-shaders
-      - conda: ../packages/stb
+      - conda: packages/expected-lite
+      - conda: packages/slang-shaders
+      - conda: packages/stb
       - pypi: https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/0e/27be9fdef66e72d64c0cdc3cc2823101b80585f8119b5c112c2e8f5f7dab/anyio-4.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3a/2a/7cc015f5b9f5db42b7d48157e23356022889fc354a2813c15934b7cb5c0e/attrs-25.4.0-py3-none-any.whl
@@ -567,7 +567,7 @@ packages:
   requires_dist:
   - pytest>=6 ; extra == 'test'
   requires_python: '>=3.7'
-- conda: ../packages/expected-lite
+- conda: packages/expected-lite
   name: expected-lite
   version: 0.8.0
   build: hb0f4dca_0
@@ -1693,7 +1693,7 @@ packages:
   - wcmatch~=8.3
   - pywin32==311 ; sys_platform == 'win32'
   requires_python: '>=3.10'
-- conda: ../packages/slang-shaders
+- conda: packages/slang-shaders
   name: slang-shaders
   version: 2025.23.2
   build: hb0f4dca_0
@@ -1742,7 +1742,7 @@ packages:
   - python-multipart>=0.0.18 ; extra == 'full'
   - pyyaml ; extra == 'full'
   requires_python: '>=3.10'
-- conda: ../packages/stb
+- conda: packages/stb
   name: stb
   version: 0.0.1
   build: hb0f4dca_0

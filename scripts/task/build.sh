@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(dirname "$0")/parse-preset.sh" "$@"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/parse-preset.sh" "$@"
 
-mkdir -p "${CCACHE_TEMPDIR:-.cache/ccache-tmp}"
-cmake --preset "$PRESET"
-cmake --build --preset "$PRESET"
+mkdir -p "${CCACHE_TEMPDIR:-$REPO_ROOT/.cache/ccache-tmp}"
+cmake --fresh -S "$REPO_ROOT" --preset "$PRESET"
+cmake --build "$REPO_ROOT/build/$PRESET"

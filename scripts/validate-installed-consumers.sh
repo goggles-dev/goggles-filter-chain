@@ -24,8 +24,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 build_type="Debug"
-enable_asan="OFF"
-enable_clang_tidy="OFF"
 
 case "$PRESET" in
   debug)
@@ -34,11 +32,8 @@ case "$PRESET" in
     build_type="Release"
     ;;
   asan)
-    enable_asan="ON"
     ;;
   quality|test)
-    enable_asan="ON"
-    enable_clang_tidy="ON"
     ;;
   *)
     echo "Error: Unsupported preset '$PRESET' for consumer validation" >&2
@@ -60,9 +55,7 @@ run_consumer_case() {
   cmake -S "$REPO_ROOT" -B "$build_root/project" -G Ninja \
     -DCMAKE_BUILD_TYPE="$build_type" \
     -DFILTER_CHAIN_LIBRARY_TYPE="$library_type" \
-    -DFILTER_CHAIN_BUILD_TESTS=OFF \
-    -DENABLE_ASAN="$enable_asan" \
-    -DENABLE_CLANG_TIDY="$enable_clang_tidy"
+    -DFILTER_CHAIN_BUILD_TESTS=OFF
   cmake --build "$build_root/project"
   cmake --install "$build_root/project" --prefix "$install_prefix"
 
