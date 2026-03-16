@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a standalone filter-chain runtime, packaging, diagnostics, or verification issue.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Pick the standalone boundary that best matches the issue.
+      options:
+        - Runtime behavior
+        - Consumer packaging or install
+        - Consumer-validation failure
+        - Diagnostics summary or diagnostics mode
+        - Intermediate-pass or golden verification
+        - Repository tooling or CI
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Include expected behavior, actual behavior, and the command or API entry point you used.
+      placeholder: pixi run test -p test failed because...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Share the smallest sequence that reproduces the issue.
+      placeholder: |
+        1. pixi install
+        2. pixi run build -p asan
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Boundary notes
+      description: Say whether this affects standalone FC ownership, Goggles host integration, or both.
+      placeholder: This appears to be standalone FC-owned because...
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and logs
+      description: Paste relevant passive summary data, test output, or CI logs.
+      render: shell

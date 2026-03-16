@@ -1,0 +1,5 @@
+/.cache/
+/.pixi/
+/build/
+/Testing/
+/compile_commands.json

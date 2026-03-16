@@ -1,0 +1,71 @@
+[workspace]
+channels = ["conda-forge"]
+name = "GogglesFilterChain"
+platforms = ["linux-64"]
+version = "0.1.0"
+requires-pixi = ">=0.45.0"
+preview = ["pixi-build"]
+
+[activation.env]
+CC = "$CONDA_PREFIX/bin/clang-21"
+CXX = "$CONDA_PREFIX/bin/clang++-21"
+GCC = "$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc"
+GXX = "$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-g++"
+CCACHE_TEMPDIR = "$PIXI_PROJECT_ROOT/.cache/ccache-tmp"
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib"
+PKG_CONFIG_PATH = "$CONDA_PREFIX/lib/pkgconfig:$CONDA_PREFIX/share/pkgconfig"
+VULKAN_SDK = "$CONDA_PREFIX"
+VK_ADD_LAYER_PATH = "$CONDA_PREFIX/share/vulkan/explicit_layer.d"
+
+[tasks.build]
+description = "Configure and build a preset"
+cmd = "bash scripts/task/build.sh"
+
+[tasks.test]
+description = "Build and run standalone contract and visual tests"
+cmd = "bash scripts/task/test.sh"
+
+[tasks.format]
+description = "Format FC-owned source and manifest files"
+cmd = "bash scripts/task/format.sh"
+
+[tasks.format-check]
+description = "Verify FC-owned source and manifest formatting"
+cmd = "bash scripts/task/format-check.sh"
+
+[tasks.consumer-validation]
+description = "Validate installed static and shared consumers"
+cmd = "bash scripts/validate-installed-consumers.sh"
+
+[tasks.semgrep]
+description = "Run Semgrep rules for FC-owned code"
+cmd = "semgrep scan --error --metrics=off --config .semgrep.yml include src tests"
+
+[tasks.static-analysis]
+description = "Run Semgrep and the clang-tidy quality build"
+cmd = "bash scripts/task/static-analysis.sh"
+
+[dependencies]
+cmake = "3.31.*"
+ninja = "1.12.*"
+clang_linux-64 = "21.*"
+clangxx_linux-64 = "21.*"
+gcc_linux-64 = "*"
+gxx_linux-64 = "*"
+sysroot_linux-64 = "2.28.*"
+clang-tools = "21.*"
+ccache = "4.*"
+catch2 = "3.8.*"
+expected-lite = { path = "../packages/expected-lite" }
+libvulkan-headers = "1.4.*"
+python = "3.12.*"
+spdlog = "1.15.*"
+slang-shaders = { path = "../packages/slang-shaders" }
+stb = { path = "../packages/stb" }
+taplo = "==0.9.3"
+libvulkan-loader = "1.4.*"
+vulkan-tools = "1.4.*"
+vulkan-validation-layers = "1.4.*"
+
+[pypi-dependencies]
+semgrep = "==1.154.0"

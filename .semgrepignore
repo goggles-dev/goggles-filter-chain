@@ -1,0 +1,6 @@
+tests/golden/**
+build/**
+.pixi/**
+.cache/**
+packages/**/build/**
+packages/**/work/**

@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a standalone filter-chain improvement within the final ownership boundary.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: Describe the user or consumer problem you want to solve.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Explain the API, packaging, or workflow change you want.
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Ownership boundary
+      description: Which side should own this behavior?
+      options:
+        - Standalone FC runtime or package
+        - Goggles host integration
+        - Unsure
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: This request does not require expanding stable public diagnostics-session lifecycle or pass-capture APIs without a new approved spec/design update.
+        - label: I checked whether the request can be satisfied through the existing installed package target `GogglesFilterChain::goggles-filter-chain`.

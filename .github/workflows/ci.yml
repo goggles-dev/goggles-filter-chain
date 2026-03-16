@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  PIXI_VERSION: v0.63.2
+  CCACHE_MAX_SIZE: 1G
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  format-check:
+    name: format-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          cache: true
+          manifest-path: pixi.toml
+
+      - name: Run format-check lane
+        run: pixi run format-check
+
+  build-and-test:
+    name: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          cache: true
+          manifest-path: pixi.toml
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-fc-ccache-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-fc-ccache-${{ github.ref_name }}-
+            ${{ runner.os }}-fc-ccache-main-
+            ${{ runner.os }}-fc-ccache-
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
+
+      - name: Configure ccache
+        run: |
+          pixi run ccache --set-config=max_size=${{ env.CCACHE_MAX_SIZE }}
+          pixi run ccache --set-config=compression=true
+          pixi run ccache --zero-stats
+
+      - name: Build standalone ASAN preset
+        run: pixi run build -p asan
+
+      - name: Run contract, runtime_diagnostics, and golden verification
+        run: ctest --preset asan --output-on-failure
+
+      - name: Show ccache statistics
+        if: always()
+        run: pixi run ccache --show-stats
+
+  consumer-validation:
+    name: consumer-validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          cache: true
+          manifest-path: pixi.toml
+
+      - name: Run installed consumer validation
+        run: pixi run consumer-validation -p test
+
+  static-analysis:
+    name: static-analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          cache: true
+          manifest-path: pixi.toml
+
+      - name: Run Semgrep and quality build for FC-owned code
+        run: pixi run static-analysis

@@ -1,0 +1,151 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": ".common",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "20",
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "CMAKE_CXX_EXTENSIONS": "OFF",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": ".debug",
+      "hidden": true,
+      "inherits": ".common",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": ".release",
+      "hidden": true,
+      "inherits": ".common",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": ".asan",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": ".clang-tidy",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY": "ON"
+      }
+    },
+    {
+      "name": ".tests-enabled",
+      "hidden": true,
+      "cacheVariables": {
+        "FILTER_CHAIN_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Debug standalone build",
+      "inherits": ".debug"
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Release standalone build",
+      "inherits": ".release"
+    },
+    {
+      "name": "asan",
+      "displayName": "AddressSanitizer",
+      "description": "Debug standalone build with tests and AddressSanitizer",
+      "inherits": [
+        ".debug",
+        ".asan",
+        ".tests-enabled"
+      ]
+    },
+    {
+      "name": "quality",
+      "displayName": "Quality",
+      "description": "Debug standalone build with clang-tidy enabled for FC-owned code",
+      "inherits": [
+        ".debug",
+        ".asan",
+        ".clang-tidy",
+        ".tests-enabled"
+      ]
+    },
+    {
+      "name": "test",
+      "displayName": "Test",
+      "description": "Debug standalone build for contract, runtime_diagnostics, and golden verification",
+      "inherits": [
+        ".debug",
+        ".asan",
+        ".clang-tidy",
+        ".tests-enabled"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "asan",
+      "configurePreset": "asan"
+    },
+    {
+      "name": "quality",
+      "configurePreset": "quality"
+    },
+    {
+      "name": "test",
+      "configurePreset": "test"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "asan",
+      "displayName": "ASAN test execution",
+      "description": "Run contract and visual golden verification from the ASAN preset",
+      "configurePreset": "asan",
+      "output": {
+        "verbosity": "verbose"
+      },
+      "execution": {
+        "jobs": 0
+      }
+    },
+    {
+      "name": "test",
+      "displayName": "Standalone test execution",
+      "description": "Run contract, runtime_diagnostics, and intermediate golden verification",
+      "configurePreset": "test",
+      "output": {
+        "verbosity": "verbose"
+      },
+      "execution": {
+        "jobs": 0
+      }
+    }
+  ]
+}

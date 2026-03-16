@@ -1,0 +1,15 @@
+rules:
+  - id: fc-no-using-namespace-headers
+    message: Headers must not use `using namespace`; keep namespace imports out of headers.
+    severity: ERROR
+    languages:
+      - cpp
+    pattern: using namespace $NS;
+    paths:
+      include:
+        - /include/**/*.h
+        - /include/**/*.hpp
+        - /src/**/*.h
+        - /src/**/*.hpp
+        - /tests/**/*.h
+        - /tests/**/*.hpp
