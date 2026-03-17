@@ -1,8 +1,8 @@
 #pragma once
 
 #include <filesystem>
+#include <goggles/filter_chain.h>
 #include <goggles/filter_chain/result.hpp>
-#include <goggles_filter_chain.h>
 #include <optional>
 #include <string>
 #include <vector>

@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <filesystem>
 #include <functional>
+#include <goggles/filter_chain.h>
 #include <goggles/filter_chain/error.hpp>
-#include <goggles_filter_chain.h>
 #include <optional>
 #include <string>
 #include <string_view>

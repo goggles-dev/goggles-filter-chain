@@ -6,7 +6,7 @@
 #include <charconv>
 #include <filesystem>
 #include <fstream>
-#include <goggles/filter_chain/api.hpp>
+#include <goggles/filter_chain.hpp>
 #include <optional>
 #include <string>
 #include <string_view>

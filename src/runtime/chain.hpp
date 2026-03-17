@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <goggles/filter_chain.h>
 #include <goggles/filter_chain/filter_controls.hpp>
-#include <goggles_filter_chain.h>
 #include <memory>
 #include <optional>
 #include <string>

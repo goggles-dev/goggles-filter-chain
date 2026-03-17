@@ -1,9 +1,9 @@
 #pragma once
 
 #include <filesystem>
+#include <goggles/filter_chain.h>
 #include <goggles/filter_chain/result.hpp>
 #include <goggles/filter_chain/scale_mode.hpp>
-#include <goggles_filter_chain.h>
 #include <memory>
 #include <string>
 #include <unordered_map>

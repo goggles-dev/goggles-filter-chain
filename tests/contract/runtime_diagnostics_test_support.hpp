@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 #include <optional>
 #include <string_view>
 #include <vector>

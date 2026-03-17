@@ -3,7 +3,7 @@
 #include "util/logging.hpp"
 
 #include <cstdint>
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 
 namespace goggles::filter_chain::runtime {
 

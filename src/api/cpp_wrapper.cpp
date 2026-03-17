@@ -1,4 +1,4 @@
-#include <goggles/filter_chain/api.hpp>
+#include <goggles/filter_chain.hpp>
 #include <utility>
 
 namespace goggles::filter_chain {

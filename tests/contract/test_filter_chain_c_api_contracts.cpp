@@ -1,7 +1,7 @@
 /// @file test_filter_chain_c_api_contracts.cpp
 /// Contract tests for the standalone goggles_fc_* C API surface.
 ///
-/// Tests the public header <goggles_filter_chain.h> exclusively. No internal headers.
+/// Tests the public header <goggles/filter_chain.h> exclusively. No internal headers.
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -11,7 +11,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 #include <limits>
 #include <string>
 #include <string_view>

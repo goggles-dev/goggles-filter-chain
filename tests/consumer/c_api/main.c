@@ -5,7 +5,7 @@
  * This is a pure C11 program that validates the public C ABI surface by linking
  * against the INSTALLED GogglesFilterChain package via find_package().
  *
- * It includes ONLY <goggles_filter_chain.h> — no Goggles-private headers, no
+ * It includes ONLY <goggles/filter_chain.h> — no Goggles-private headers, no
  * C++ headers, no shader_dir inputs.
  *
  * Usage:
@@ -15,7 +15,7 @@
  * Exit: 0 on success, non-zero on first failure.
  */
 
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

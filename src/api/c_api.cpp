@@ -5,7 +5,7 @@
 #include "runtime/program.hpp"
 
 #include <cstdint>
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 #include <new>
 
 using namespace goggles::filter_chain::detail;

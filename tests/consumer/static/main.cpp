@@ -4,7 +4,7 @@
 // No Vulkan device is created — this is a build-level validation, not a runtime test.
 
 #include <cstdint>
-#include <goggles/filter_chain/api.hpp>
+#include <goggles/filter_chain.hpp>
 #include <string_view>
 #include <type_traits>
 

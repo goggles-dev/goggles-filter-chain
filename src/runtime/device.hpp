@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 #include <string>
 
 namespace goggles::filter_chain::runtime {

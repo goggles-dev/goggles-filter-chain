@@ -1,15 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <goggles/filter_chain.h>
 #include <goggles/filter_chain/common.hpp>
 #include <goggles/filter_chain/error.hpp>
-#include <goggles_filter_chain.h>
 #include <string>
 #include <string_view>
 
 namespace goggles::filter_chain {
 
-/// @brief RAII wrapper for `goggles_fc_instance_t`.
 class Instance {
 public:
     Instance() = default;
@@ -35,7 +34,6 @@ private:
     goggles_fc_instance_t* m_handle = nullptr;
 };
 
-/// @brief RAII wrapper for `goggles_fc_device_t`.
 class Device {
 public:
     Device() = default;
@@ -59,7 +57,6 @@ private:
     goggles_fc_device_t* m_handle = nullptr;
 };
 
-/// @brief RAII wrapper for `goggles_fc_program_t`.
 class Program {
 public:
     Program() = default;
@@ -85,7 +82,6 @@ private:
     goggles_fc_program_t* m_handle = nullptr;
 };
 
-/// @brief RAII wrapper for `goggles_fc_chain_t`.
 class Chain {
 public:
     Chain() = default;
@@ -138,22 +134,18 @@ private:
     goggles_fc_chain_t* m_handle = nullptr;
 };
 
-/// @brief Return the packed API semantic version.
 [[nodiscard]] inline auto get_api_version() -> uint32_t {
     return goggles_fc_get_api_version();
 }
 
-/// @brief Return the ABI major version.
 [[nodiscard]] inline auto get_abi_version() -> uint32_t {
     return goggles_fc_get_abi_version();
 }
 
-/// @brief Query capability flags.
 [[nodiscard]] inline auto get_capabilities() -> goggles_fc_capability_flags_t {
     return goggles_fc_get_capabilities();
 }
 
-/// @brief Map a status code to a human-readable string.
 [[nodiscard]] inline auto status_string(goggles_fc_status_t status) -> const char* {
     return goggles_fc_status_string(status);
 }

@@ -1,5 +1,5 @@
-#ifndef GOGGLES_FILTER_CHAIN_H
-#define GOGGLES_FILTER_CHAIN_H
+#ifndef GOGGLES_FILTER_CHAIN_ENTRYPOINT_H
+#define GOGGLES_FILTER_CHAIN_ENTRYPOINT_H
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -732,4 +732,4 @@ GOGGLES_FC_API goggles_fc_status_t GOGGLES_FC_CALL goggles_fc_chain_get_diagnost
 }
 #endif
 
-#endif /* GOGGLES_FILTER_CHAIN_H */
+#endif /* GOGGLES_FILTER_CHAIN_ENTRYPOINT_H */

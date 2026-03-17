@@ -1,6 +1,6 @@
 #pragma once
 
-#include <goggles_filter_chain.h>
+#include <goggles/filter_chain.h>
 
 struct GogglesFcDiagnosticPolicy {
     uint32_t struct_size;
