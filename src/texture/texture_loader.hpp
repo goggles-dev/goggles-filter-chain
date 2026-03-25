@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <goggles/filter_chain/error.hpp>
+#include <goggles/error.hpp>
 #include <string>
 #include <vulkan/vulkan.hpp>
 

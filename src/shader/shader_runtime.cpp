@@ -2,7 +2,7 @@
 
 #include "slang_reflect.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 #include "util/serializer.hpp"
 
 #include <array>

@@ -4,7 +4,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
-#include <goggles/filter_chain/error.hpp>
+#include <goggles/error.hpp>
 #include <string>
 #include <vector>
 

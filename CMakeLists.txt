@@ -25,6 +25,8 @@ unset(GOGGLES_FILTER_CHAIN_FIND_PRIVATE_DEPS)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+add_subdirectory(common)
+
 add_library(fc_support_obj OBJECT
     src/util/logging.cpp
 )
@@ -204,7 +206,6 @@ target_include_directories(fc_api_obj PRIVATE
 )
 target_link_libraries(fc_api_obj PRIVATE
     Vulkan::Vulkan
-    nonstd::expected-lite
 )
 if(FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED STREQUAL "SHARED")
     target_compile_definitions(fc_api_obj PRIVATE GOGGLES_FC_BUILD_SHARED)
@@ -220,7 +221,7 @@ foreach(target_name IN ITEMS
         fc_runtime_obj
         fc_api_obj)
     target_link_libraries(${target_name} PRIVATE
-        nonstd::expected-lite
+        goggles_core
     )
     target_compile_definitions(${target_name} PRIVATE
         VULKAN_HPP_NO_EXCEPTIONS
@@ -265,7 +266,7 @@ target_compile_definitions(goggles-filter-chain PUBLIC
 target_link_libraries(goggles-filter-chain
     PUBLIC
         Vulkan::Vulkan
-        nonstd::expected-lite
+        goggles_core
     PRIVATE
         spdlog::spdlog
         slang::slang
@@ -294,13 +295,17 @@ write_basic_package_version_file(
     COMPATIBILITY SameMajorVersion
 )
 
-install(TARGETS goggles-filter-chain EXPORT GogglesFilterChainTargets
+install(TARGETS goggles-filter-chain goggles_core EXPORT GogglesFilterChainTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 install(DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(DIRECTORY common/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 

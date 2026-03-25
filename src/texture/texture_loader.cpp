@@ -1,7 +1,7 @@
 #include "texture_loader.hpp"
 
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <cmath>
 #include <cstring>

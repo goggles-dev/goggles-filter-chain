@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <goggles/filter_chain/error.hpp>
+#include <goggles/error.hpp>
 #include <optional>
 #include <slang-com-ptr.h>
 #include <slang.h>

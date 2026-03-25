@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <goggles/filter_chain/error.hpp>
+#include <goggles/error.hpp>
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>

@@ -5,7 +5,7 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <goggles/filter_chain/result.hpp>
+#include <goggles/error.hpp>
 #include <string>
 #include <vector>
 

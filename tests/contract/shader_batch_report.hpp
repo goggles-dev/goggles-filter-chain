@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <goggles/filter_chain/error.hpp>
+#include <goggles/error.hpp>
 #include <optional>
 #include <string>
 #include <vector>

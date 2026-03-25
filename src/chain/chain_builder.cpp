@@ -5,7 +5,7 @@
 #include "runtime/source_resolver.hpp"
 #include "shader/retroarch_preprocessor.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 #include "vulkan_result.hpp"
 
 #include <charconv>

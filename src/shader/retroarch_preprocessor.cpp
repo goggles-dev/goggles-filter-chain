@@ -1,7 +1,7 @@
 #include "retroarch_preprocessor.hpp"
 
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <fstream>
 #include <optional>

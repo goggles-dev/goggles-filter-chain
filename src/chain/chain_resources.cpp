@@ -2,7 +2,7 @@
 
 #include "diagnostics/diagnostic_event.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 #include "vulkan_result.hpp"
 
 #include <cmath>

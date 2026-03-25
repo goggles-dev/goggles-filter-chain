@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <goggles/filter_chain.h>
-#include <goggles/filter_chain/result.hpp>
+#include <goggles/error.hpp>
 #include <goggles/filter_chain/scale_mode.hpp>
 #include <memory>
 #include <string>

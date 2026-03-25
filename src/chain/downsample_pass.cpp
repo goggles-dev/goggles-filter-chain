@@ -3,7 +3,7 @@
 #include "runtime/embedded_assets.hpp"
 #include "shader/shader_runtime.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <algorithm>
 #include <array>

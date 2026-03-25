@@ -1,9 +1,5 @@
 #pragma once
 
-// Self-contained error types for the standalone filter-chain library.
-// Guard names are shared with the monorepo error header so that at most one
-// definition wins per TU — preventing ODR violations during extraction.
-
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -12,9 +8,6 @@
 #include <source_location>
 #include <string>
 #include <utility>
-
-#ifndef GOGGLES_ERROR_TYPES_DEFINED
-#define GOGGLES_ERROR_TYPES_DEFINED
 
 namespace goggles {
 
@@ -55,10 +48,10 @@ template <typename T>
 using ResultPtr = Result<std::unique_ptr<T>>;
 
 template <typename T>
-[[nodiscard]] inline auto make_error(ErrorCode code, const std::string& message,
+[[nodiscard]] inline auto make_error(ErrorCode code, std::string message,
                                      std::source_location loc = std::source_location::current())
     -> Result<T> {
-    return nonstd::make_unexpected(Error{code, message, loc});
+    return nonstd::make_unexpected(Error{code, std::move(message), loc});
 }
 
 template <typename T>
@@ -68,9 +61,9 @@ template <typename T>
 
 template <typename T>
 [[nodiscard]] inline auto
-make_result_ptr_error(ErrorCode code, const std::string& message,
+make_result_ptr_error(ErrorCode code, std::string message,
                       std::source_location loc = std::source_location::current()) -> ResultPtr<T> {
-    return nonstd::make_unexpected(Error{code, message, loc});
+    return nonstd::make_unexpected(Error{code, std::move(message), loc});
 }
 
 /// @brief Returns a stable string name for an `ErrorCode` value.
@@ -108,12 +101,7 @@ make_result_ptr_error(ErrorCode code, const std::string& message,
 
 } // namespace goggles
 
-#endif // GOGGLES_ERROR_TYPES_DEFINED
-
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
-
-#ifndef GOGGLES_ERROR_MACROS_DEFINED
-#define GOGGLES_ERROR_MACROS_DEFINED
 
 /// @brief Propagates an error or returns the contained value (expression-style).
 ///
@@ -160,7 +148,5 @@ make_result_ptr_error(ErrorCode code, const std::string& message,
             std::abort();                                                                          \
         }                                                                                          \
     } while (false)
-
-#endif // GOGGLES_ERROR_MACROS_DEFINED
 
 // NOLINTEND(cppcoreguidelines-macro-usage)

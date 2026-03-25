@@ -2,7 +2,7 @@
 
 #include "debug_label_scope.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <algorithm>
 #include <chrono>

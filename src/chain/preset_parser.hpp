@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <goggles/filter_chain.h>
-#include <goggles/filter_chain/result.hpp>
+#include <goggles/error.hpp>
 #include <optional>
 #include <string>
 #include <vector>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <goggles/filter_chain/result.hpp>
+#include <goggles/error.hpp>
 #include <vulkan/vulkan.hpp>
 
 namespace goggles::fc {

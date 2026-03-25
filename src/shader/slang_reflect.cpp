@@ -1,7 +1,7 @@
 #include "slang_reflect.hpp"
 
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <algorithm>
 

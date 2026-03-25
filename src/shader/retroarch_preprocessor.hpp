@@ -3,7 +3,7 @@
 #include "diagnostics/source_provenance.hpp"
 
 #include <filesystem>
-#include <goggles/filter_chain/result.hpp>
+#include <goggles/error.hpp>
 #include <optional>
 #include <string>
 #include <vector>

@@ -2,7 +2,7 @@
 
 #include "shader/shader_runtime.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <array>
 #include <cstring>

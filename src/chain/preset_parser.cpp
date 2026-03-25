@@ -2,7 +2,7 @@
 
 #include "runtime/source_resolver.hpp"
 #include "util/logging.hpp"
-#include "util/profiling.hpp"
+#include <goggles/profiling.hpp>
 
 #include <charconv>
 #include <format>
