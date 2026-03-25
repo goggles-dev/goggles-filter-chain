@@ -197,8 +197,8 @@ auto ShaderRuntime::create(const std::filesystem::path& cache_dir) -> ResultPtr<
 
     if (SLANG_FAILED(
             slang::createGlobalSession(&global_desc, runtime->m_impl->global_session.writeRef()))) {
-        return make_result_ptr_error<ShaderRuntime>(ErrorCode::shader_compile_failed,
-                                                    "Failed to create Slang global session");
+        return nonstd::make_unexpected(
+            Error{ErrorCode::shader_compile_failed, "Failed to create Slang global session"});
     }
 
     slang::TargetDesc target_desc = {};
@@ -227,8 +227,8 @@ auto ShaderRuntime::create(const std::filesystem::path& cache_dir) -> ResultPtr<
 
     if (SLANG_FAILED(runtime->m_impl->global_session->createSession(
             hlsl_session_desc, runtime->m_impl->hlsl_session.writeRef()))) {
-        return make_result_ptr_error<ShaderRuntime>(ErrorCode::shader_compile_failed,
-                                                    "Failed to create Slang HLSL session");
+        return nonstd::make_unexpected(
+            Error{ErrorCode::shader_compile_failed, "Failed to create Slang HLSL session"});
     }
 
     slang::SessionDesc glsl_session_desc = {};
@@ -240,8 +240,8 @@ auto ShaderRuntime::create(const std::filesystem::path& cache_dir) -> ResultPtr<
 
     if (SLANG_FAILED(runtime->m_impl->global_session->createSession(
             glsl_session_desc, runtime->m_impl->glsl_session.writeRef()))) {
-        return make_result_ptr_error<ShaderRuntime>(ErrorCode::shader_compile_failed,
-                                                    "Failed to create Slang GLSL session");
+        return nonstd::make_unexpected(
+            Error{ErrorCode::shader_compile_failed, "Failed to create Slang GLSL session"});
     }
 
     if (runtime->is_disk_cache_enabled()) {
@@ -258,7 +258,7 @@ auto ShaderRuntime::create(const std::filesystem::path& cache_dir) -> ResultPtr<
                          "disk cache disabled");
     }
 
-    return make_result_ptr(std::move(runtime));
+    return {std::move(runtime)};
 }
 
 void ShaderRuntime::shutdown() {

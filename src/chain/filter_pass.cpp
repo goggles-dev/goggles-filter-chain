@@ -57,8 +57,8 @@ auto FilterPass::create(const VulkanContext& vk_ctx, ShaderRuntime& shader_runti
     auto compile_result = shader_runtime.compile_retroarch_shader(
         config.vertex_source, config.fragment_source, config.shader_name, compile_report);
     if (!compile_result) {
-        return make_result_ptr_error<FilterPass>(ErrorCode::shader_compile_failed,
-                                                 compile_result.error().message);
+        return nonstd::make_unexpected(
+            Error{ErrorCode::shader_compile_failed, compile_result.error().message});
     }
 
     pass->m_vertex_reflection = std::move(compile_result->vertex_reflection);
@@ -102,7 +102,7 @@ auto FilterPass::create(const VulkanContext& vk_ctx, ShaderRuntime& shader_runti
     GOGGLES_LOG_DEBUG("FilterPass '{}' initialized (push_constants={}, size={}, vertex_inputs={})",
                       config.shader_name, pass->m_has_push_constants, pass->m_push_constant_size,
                       pass->m_has_vertex_inputs);
-    return make_result_ptr(std::move(pass));
+    return {std::move(pass)};
 }
 
 void FilterPass::shutdown() {

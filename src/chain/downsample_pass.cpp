@@ -72,7 +72,7 @@ auto DownsamplePass::create(const VulkanContext& vk_ctx, ShaderRuntime& shader_r
     GOGGLES_TRY(pass->create_pipeline(shader_runtime, config.shader_dir));
 
     GOGGLES_LOG_DEBUG("DownsamplePass initialized");
-    return make_result_ptr(std::move(pass));
+    return {std::move(pass)};
 }
 
 void DownsamplePass::shutdown() {

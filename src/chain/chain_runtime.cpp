@@ -267,7 +267,7 @@ auto ChainRuntime::create(const VulkanContext& vk_ctx, vk::Format swapchain_form
                                paths.shader_dir, source_resolution));
     chain->set_stage_policy(true, true);
 
-    return make_result_ptr(std::move(chain));
+    return {std::move(chain)};
 }
 
 ChainRuntime::~ChainRuntime() {

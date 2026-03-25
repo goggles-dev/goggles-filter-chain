@@ -13,7 +13,6 @@ namespace goggles {
 
 /// @brief Error codes used by `goggles::Error`.
 enum class ErrorCode : std::uint8_t {
-    ok,
     file_not_found,
     file_read_failed,
     file_write_failed,
@@ -54,23 +53,9 @@ template <typename T>
     return nonstd::make_unexpected(Error{code, std::move(message), loc});
 }
 
-template <typename T>
-[[nodiscard]] inline auto make_result_ptr(std::unique_ptr<T> ptr) -> ResultPtr<T> {
-    return ResultPtr<T>{std::move(ptr)};
-}
-
-template <typename T>
-[[nodiscard]] inline auto
-make_result_ptr_error(ErrorCode code, std::string message,
-                      std::source_location loc = std::source_location::current()) -> ResultPtr<T> {
-    return nonstd::make_unexpected(Error{code, std::move(message), loc});
-}
-
 /// @brief Returns a stable string name for an `ErrorCode` value.
 [[nodiscard]] constexpr auto error_code_name(ErrorCode code) -> const char* {
     switch (code) {
-    case ErrorCode::ok:
-        return "ok";
     case ErrorCode::file_not_found:
         return "file_not_found";
     case ErrorCode::file_read_failed:

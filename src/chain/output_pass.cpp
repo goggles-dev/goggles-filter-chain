@@ -29,7 +29,7 @@ auto OutputPass::create(const VulkanContext& vk_ctx, ShaderRuntime& shader_runti
     GOGGLES_TRY(pass->create_pipeline(shader_runtime, config.shader_dir));
 
     GOGGLES_LOG_DEBUG("OutputPass initialized");
-    return make_result_ptr(std::move(pass));
+    return {std::move(pass)};
 }
 
 void OutputPass::shutdown() {

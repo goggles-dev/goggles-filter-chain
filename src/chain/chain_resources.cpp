@@ -124,7 +124,7 @@ auto ChainResources::create(const VulkanContext& vk_ctx, vk::Format swapchain_fo
     }
 
     GOGGLES_LOG_DEBUG("FilterChain initialized (passthrough mode)");
-    return make_result_ptr(std::move(resources));
+    return {std::move(resources)};
 }
 
 void ChainResources::install(CompiledChain&& compiled, diagnostics::DiagnosticSession* session) {

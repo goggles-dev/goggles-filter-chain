@@ -67,7 +67,7 @@ auto Framebuffer::create(vk::Device device, vk::PhysicalDevice physical_device, 
 
     GOGGLES_LOG_DEBUG("Framebuffer created: {}x{}, format={}", extent.width, extent.height,
                       vk::to_string(format));
-    return make_result_ptr(std::move(framebuffer));
+    return {std::move(framebuffer)};
 }
 
 auto Framebuffer::resize(vk::Extent2D new_extent) -> Result<void> {
