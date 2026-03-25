@@ -4,6 +4,7 @@ project(GogglesFilterChain VERSION 0.1.0 LANGUAGES CXX)
 set(FILTER_CHAIN_LIBRARY_TYPE "STATIC" CACHE STRING "Library type for goggles-filter-chain")
 set_property(CACHE FILTER_CHAIN_LIBRARY_TYPE PROPERTY STRINGS STATIC SHARED)
 option(FILTER_CHAIN_BUILD_TESTS "Build standalone filter-chain tests" OFF)
+option(FILTER_CHAIN_BUILD_TOOLS "Build filter-chain developer tools" OFF)
 option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
 option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 option(ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer" OFF)
@@ -323,6 +324,10 @@ install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FilterChainDependencies.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/GogglesFilterChain
 )
+
+if(FILTER_CHAIN_BUILD_TOOLS)
+    add_subdirectory(tools)
+endif()
 
 if(FILTER_CHAIN_BUILD_TESTS)
     enable_testing()

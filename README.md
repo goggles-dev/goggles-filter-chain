@@ -57,6 +57,35 @@ target_link_libraries(your_target PRIVATE
 
 For installed-package validation examples, see `tests/consumer/` and `scripts/validate-installed-consumers.sh`.
 
+## CLI Tool
+
+`goggles-chain-cli` applies RetroArch shader presets to images offline. It is built automatically with all standalone presets except `release`:
+
+```bash
+pixi run build -p debug
+./build/debug/tools/cli/goggles-chain-cli --preset shaders/crt.slangp --output out/ input.png
+```
+
+```
+goggles-chain-cli --preset <path.slangp> --output <dir> [options] <input...>
+
+Positional:
+  <input...>              One or more image files, or a directory (PNG/JPG)
+
+Required:
+  --preset <path>         RetroArch preset file (.slangp)
+  --output <dir>          Output directory (created if missing)
+
+Optional:
+  --frames <N>            Render N frames per image (default: 1)
+  --scale <factor>        Output scale factor (e.g., 2 for 2x upscale)
+  --output-size <WxH>     Explicit output dimensions (overrides --scale)
+  --param <name=value>    Control override (repeatable)
+  --verbose               Enable diagnostic logging
+  --help                  Show usage
+  --version               Show version
+```
+
 ## Local Goggles Override
 
 Goggles keeps `filter-chain/` as the default integration path, but co-development uses the documented local override:

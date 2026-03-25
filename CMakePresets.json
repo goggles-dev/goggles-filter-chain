@@ -56,10 +56,17 @@
       }
     },
     {
+      "name": ".tools-enabled",
+      "hidden": true,
+      "cacheVariables": {
+        "FILTER_CHAIN_BUILD_TOOLS": "ON"
+      }
+    },
+    {
       "name": "debug",
       "displayName": "Debug",
       "description": "Debug standalone build",
-      "inherits": ".debug"
+      "inherits": [".debug", ".tools-enabled"]
     },
     {
       "name": "release",
@@ -74,7 +81,8 @@
       "inherits": [
         ".debug",
         ".asan",
-        ".tests-enabled"
+        ".tests-enabled",
+        ".tools-enabled"
       ]
     },
     {
@@ -85,7 +93,8 @@
         ".debug",
         ".asan",
         ".clang-tidy",
-        ".tests-enabled"
+        ".tests-enabled",
+        ".tools-enabled"
       ]
     },
     {
@@ -96,7 +105,8 @@
         ".debug",
         ".asan",
         ".clang-tidy",
-        ".tests-enabled"
+        ".tests-enabled",
+        ".tools-enabled"
       ]
     }
   ],
