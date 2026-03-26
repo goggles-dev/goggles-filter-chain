@@ -8,6 +8,22 @@ This directory contains standalone filter-chain golden PNGs for diagnostics-heav
 - `runtime_history_frame1.png` / `runtime_history_frame3.png` - temporal final-output captures for the runtime history preset
 - `runtime_history_pass0_frame1.png` / `runtime_history_pass0_frame3.png` - temporal intermediate captures for the runtime history preset
 
+## Upstream presets
+
+The `upstream/` directory contains golden images for 12 curated RetroArch presets, generated on lavapipe at 320x240 from `assets/test_pattern_240p.png`.
+
+Regenerate with: `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json pixi run update-golden -p test`
+
+### Naming convention
+
+- `final_frame{N}.png` — final output for frame N (N = 0, 1, 2)
+- `pass_{ordinal}_frame{N}.png` — intermediate pass output
+
+### Presets not yet covered
+
+- `crt-royale-ntsc-svideo` — shader compilation error (ntsc-pass3 module)
+- `dual_filter_6_pass` — runtime crash (heap-buffer-overflow in chain execution)
+
 ## Ownership
 
 These images belong to standalone filter-chain verification. Goggles host-side visual tests no longer own or consume them.
