@@ -2,7 +2,6 @@
 
 #include "slang_reflect.hpp"
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 #include "util/serializer.hpp"
 
 #include <array>
@@ -10,6 +9,7 @@
 #include <cstring>
 #include <fstream>
 #include <functional>
+#include <goggles/profiling.hpp>
 #include <slang-com-helper.h>
 #include <slang-com-ptr.h>
 #include <slang.h>

@@ -4,11 +4,11 @@
 #include "diagnostics/log_sink.hpp"
 #include "shader/shader_runtime.hpp"
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 #include "vulkan_result.hpp"
 
 #include <algorithm>
 #include <cstring>
+#include <goggles/profiling.hpp>
 
 namespace goggles::fc {
 

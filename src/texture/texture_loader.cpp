@@ -1,10 +1,10 @@
 #include "texture_loader.hpp"
 
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 
 #include <cmath>
 #include <cstring>
+#include <goggles/profiling.hpp>
 #include <limits>
 #include <stb_image.h>
 

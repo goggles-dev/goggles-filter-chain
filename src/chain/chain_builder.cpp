@@ -5,12 +5,12 @@
 #include "runtime/source_resolver.hpp"
 #include "shader/retroarch_preprocessor.hpp"
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 #include "vulkan_result.hpp"
 
 #include <charconv>
 #include <cstdint>
 #include <functional>
+#include <goggles/profiling.hpp>
 #include <sstream>
 #include <unordered_set>
 

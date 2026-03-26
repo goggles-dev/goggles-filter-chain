@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <goggles/error.hpp>
 #include <goggles/filter_chain.h>
 #include <goggles/filter_chain/common.hpp>
-#include <goggles/error.hpp>
 #include <string>
 #include <string_view>
 

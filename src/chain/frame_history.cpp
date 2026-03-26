@@ -1,9 +1,9 @@
 #include "frame_history.hpp"
 
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 
 #include <algorithm>
+#include <goggles/profiling.hpp>
 
 namespace goggles::fc {
 

@@ -2,12 +2,12 @@
 
 #include "debug_label_scope.hpp"
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
 #include <format>
+#include <goggles/profiling.hpp>
 #include <string>
 
 namespace goggles::fc {
@@ -24,6 +24,30 @@ auto now_ns() -> uint64_t {
 
 auto size_vec4_value(const SizeVec4& value) -> std::array<float, 4> {
     return {value.width, value.height, value.inv_width, value.inv_height};
+}
+
+auto format_short_name(vk::Format fmt) -> std::string_view {
+    switch (fmt) {
+    case vk::Format::eR8G8B8A8Unorm:
+        return "RGBA8";
+    case vk::Format::eR8G8B8A8Srgb:
+        return "sRGBA8";
+    case vk::Format::eR16G16B16A16Sfloat:
+        return "RGBA16F";
+    case vk::Format::eR32G32B32A32Sfloat:
+        return "RGBA32F";
+    case vk::Format::eA2B10G10R10UnormPack32:
+        return "RGB10A2";
+    default:
+        return "unknown";
+    }
+}
+
+auto pass_debug_label(size_t index, const FilterPass& pass, vk::Extent2D source_extent,
+                      vk::Extent2D target_extent, vk::Format target_format) -> std::string {
+    const auto scale = (source_extent.width > 0) ? target_extent.width / source_extent.width : 1U;
+    return std::format("Pass {}: {} ({}x scale, {}, {} bindings)", index, pass.shader_name(), scale,
+                       format_short_name(target_format), pass.texture_bindings().size());
 }
 
 auto semantic_classification(const FilterPass& pass, std::string_view name)
@@ -251,6 +275,20 @@ void emit_semantic_events(diagnostics::DiagnosticSession& session, const FilterP
                 .type = diagnostics::DegradationType::semantic_unresolved,
             });
         }
+    }
+}
+
+void emit_pass_semantics(diagnostics::DiagnosticSession* session, const FilterPass& pass,
+                         uint32_t pass_ordinal) {
+    if (session == nullptr) {
+        return;
+    }
+    const auto& reflection = pass.reflection();
+    if (reflection.ubo) {
+        emit_semantic_events(*session, pass, pass_ordinal, reflection.ubo->members);
+    }
+    if (reflection.push_constants) {
+        emit_semantic_events(*session, pass, pass_ordinal, reflection.push_constants->members);
     }
 }
 
@@ -638,17 +676,7 @@ void ChainExecutor::record(ChainResources& resources, vk::CommandBuffer cmd,
         pass->set_final_viewport_size(vp.width, vp.height);
         pass->set_rotation(0);
 
-        if (session != nullptr) {
-            const auto& reflection = pass->reflection();
-            if (reflection.ubo) {
-                emit_semantic_events(*session, *pass, static_cast<uint32_t>(i),
-                                     reflection.ubo->members);
-            }
-            if (reflection.push_constants) {
-                emit_semantic_events(*session, *pass, static_cast<uint32_t>(i),
-                                     reflection.push_constants->members);
-            }
-        }
+        emit_pass_semantics(session, *pass, static_cast<uint32_t>(i));
 
         const auto bind_result =
             bind_pass_textures(resources, *pass, i, effective_original_view,
@@ -681,9 +709,9 @@ void ChainExecutor::record(ChainResources& resources, vk::CommandBuffer cmd,
                                                      true);
         }
         {
-            const ScopedDebugLabel debug_label(cmd,
-                                               std::format("Pass {} {}", i, pass->shader_name()),
-                                               {0.18F, 0.46F, 0.92F, 1.0F});
+            const ScopedDebugLabel debug_label(
+                cmd, pass_debug_label(i, *pass, source_extent, target_extent, target_format),
+                {0.18F, 0.46F, 0.92F, 1.0F});
             pass->record(cmd, ctx);
         }
         if (timestamps_active(session, gpu_timestamp_pool)) {

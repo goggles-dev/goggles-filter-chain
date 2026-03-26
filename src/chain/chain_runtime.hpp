@@ -9,8 +9,8 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <goggles/filter_chain/filter_controls.hpp>
 #include <goggles/error.hpp>
+#include <goggles/filter_chain/filter_controls.hpp>
 #include <goggles/filter_chain/scale_mode.hpp>
 #include <goggles/filter_chain/vulkan_context.hpp>
 #include <memory>

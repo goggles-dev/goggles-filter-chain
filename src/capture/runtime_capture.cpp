@@ -1,16 +1,19 @@
-#include "runtime_capture.hpp"
+#include "capture/runtime_capture.hpp"
 
 #include "chain/chain_runtime.hpp"
+#include "diagnostics/diagnostic_policy.hpp"
+#include "diagnostics/diagnostic_report.hpp"
+#include "diagnostics/diagnostic_report_json.hpp"
 
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <cstring>
-#include <stb/stb_image_write.h>
+#include <stb_image_write.h>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-namespace goggles::test {
+namespace goggles::fc {
 
 namespace {
 
@@ -429,9 +432,8 @@ auto make_quadrant_pixels(VkExtent2D extent) -> std::vector<std::uint8_t> {
     return pixels;
 }
 
-auto upload_quadrant_source(const VulkanRuntimeFixture& fixture, const ImageGuard& source,
-                            VkExtent2D extent) -> bool {
-    const auto pixels = make_quadrant_pixels(extent);
+auto upload_source_pixels(const VulkanRuntimeFixture& fixture, const ImageGuard& source,
+                          VkExtent2D extent, const std::vector<uint8_t>& pixels) -> bool {
     const auto buffer_size = static_cast<VkDeviceSize>(pixels.size());
     auto staging = create_buffer(
         fixture.device, fixture.physical_device, buffer_size,
@@ -710,9 +712,14 @@ auto capture_runtime_outputs(const RuntimeCapturePlan& plan) -> Result<RuntimeCa
         return make_error<RuntimeCaptureResult>(ErrorCode::vulkan_init_failed,
                                                 "Failed to create visual capture images");
     }
-    if (!upload_quadrant_source(
+
+    const auto pixels = plan.source_pixels.empty()
+                            ? make_quadrant_pixels({.width = plan.source_extent.width,
+                                                    .height = plan.source_extent.height})
+                            : plan.source_pixels;
+    if (!upload_source_pixels(
             fixture, *source,
-            {.width = plan.source_extent.width, .height = plan.source_extent.height})) {
+            {.width = plan.source_extent.width, .height = plan.source_extent.height}, pixels)) {
         return make_error<RuntimeCaptureResult>(ErrorCode::vulkan_device_lost,
                                                 "Failed to upload visual capture source image");
     }
@@ -727,6 +734,12 @@ auto capture_runtime_outputs(const RuntimeCapturePlan& plan) -> Result<RuntimeCa
                                                 runtime_result.error().location);
     }
     auto runtime = std::move(*runtime_result);
+
+    if (plan.forensic_diagnostics) {
+        diagnostics::DiagnosticPolicy policy;
+        policy.capture_mode = diagnostics::CaptureMode::forensic;
+        runtime.runtime->create_diagnostic_session(policy);
+    }
 
     const auto max_frame = *std::max_element(plan.frame_indices.begin(), plan.frame_indices.end());
     RuntimeCaptureResult result;
@@ -776,8 +789,15 @@ auto capture_runtime_outputs(const RuntimeCapturePlan& plan) -> Result<RuntimeCa
     result.diagnostic_summary = goggles_fc_diagnostic_summary_init();
     result.diagnostic_summary.current_frame = max_frame + 1u;
 
+    if (plan.forensic_diagnostics) {
+        if (auto* session = runtime.runtime->diagnostic_session(); session != nullptr) {
+            const auto report = diagnostics::build_diagnostic_report(*session);
+            result.diagnostic_report_json = diagnostics::serialize_report_json(report);
+        }
+    }
+
     std::filesystem::remove_all(cache_dir);
     return result;
 }
 
-} // namespace goggles::test
+} // namespace goggles::fc

@@ -1,4 +1,9 @@
+#include "cmd_assert.hpp"
+#include "cmd_capture.hpp"
+#include "cmd_diagnose.hpp"
+#include "cmd_validate.hpp"
 #include "image_io.hpp"
+#include "subcommand.hpp"
 #include "vulkan_backend.hpp"
 
 #include <charconv>
@@ -346,7 +351,7 @@ auto process_image(goggles::cli::VulkanBackend& vk,
 
 } // namespace
 
-auto main(int argc, char** argv) -> int {
+auto run_process(int argc, char** argv) -> int {
     auto args_result = parse_args(argc, argv);
     if (!args_result) {
         std::fprintf(stderr, "Error: %s\n", args_result.error().message.c_str());
@@ -446,4 +451,50 @@ auto main(int argc, char** argv) -> int {
         return EXIT_PARTIAL;
     }
     return EXIT_OK;
+}
+
+auto run_validate(int argc, char** argv) -> int {
+    return goggles::cli::run_validate(argc, argv);
+}
+
+auto run_diagnose(int argc, char** argv) -> int {
+    return goggles::cli::run_diagnose(argc, argv);
+}
+
+auto run_assert_image(int argc, char** argv) -> int {
+    return goggles::cli::run_assert_image(argc, argv);
+}
+
+auto run_assert_clean(int argc, char** argv) -> int {
+    return goggles::cli::run_assert_clean(argc, argv);
+}
+
+auto run_assert_no_degradation(int argc, char** argv) -> int {
+    return goggles::cli::run_assert_no_degradation(argc, argv);
+}
+
+auto run_capture(int argc, char** argv) -> int {
+    return goggles::cli::run_capture(argc, argv);
+}
+
+auto main(int argc, char** argv) -> int {
+    auto [command, first_arg] = goggles::cli::parse_subcommand(argc, argv);
+
+    switch (command) {
+    case goggles::cli::Subcommand::process:
+        return run_process(argc, argv);
+    case goggles::cli::Subcommand::validate:
+        return run_validate(argc - first_arg, argv + first_arg);
+    case goggles::cli::Subcommand::diagnose:
+        return run_diagnose(argc - first_arg, argv + first_arg);
+    case goggles::cli::Subcommand::assert_image:
+        return run_assert_image(argc - first_arg, argv + first_arg);
+    case goggles::cli::Subcommand::assert_clean:
+        return run_assert_clean(argc - first_arg, argv + first_arg);
+    case goggles::cli::Subcommand::assert_no_degradation:
+        return run_assert_no_degradation(argc - first_arg, argv + first_arg);
+    case goggles::cli::Subcommand::capture:
+        return run_capture(argc - first_arg, argv + first_arg);
+    }
+    return 2;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <format>
-#include <goggles/filter_chain.h>
 #include <goggles/error.hpp>
+#include <goggles/filter_chain.h>
 #include <string>
 #include <string_view>
 

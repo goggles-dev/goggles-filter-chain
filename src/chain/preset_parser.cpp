@@ -2,11 +2,11 @@
 
 #include "runtime/source_resolver.hpp"
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 
 #include <charconv>
 #include <format>
 #include <fstream>
+#include <goggles/profiling.hpp>
 #include <optional>
 #include <regex>
 #include <sstream>

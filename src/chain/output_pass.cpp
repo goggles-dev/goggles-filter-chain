@@ -3,9 +3,9 @@
 #include "runtime/embedded_assets.hpp"
 #include "shader/shader_runtime.hpp"
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 
 #include <array>
+#include <goggles/profiling.hpp>
 
 namespace goggles::fc {
 

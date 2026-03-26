@@ -1,8 +1,9 @@
 #include "framebuffer.hpp"
 
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 #include "vulkan_result.hpp"
+
+#include <goggles/profiling.hpp>
 
 namespace goggles::fc {
 

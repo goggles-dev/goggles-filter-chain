@@ -23,6 +23,8 @@ set(FC_TEST_SOURCES
     contract/test_runtime_diagnostics_public.cpp
     contract/test_runtime_diagnostics_internal.cpp
     contract/test_filter_chain_c_api_contracts.cpp
+    contract/test_json_writer.cpp
+    contract/test_diagnostic_report_json.cpp
 )
 
 add_executable(fc_tests ${FC_TEST_SOURCES})

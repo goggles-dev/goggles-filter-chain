@@ -10,6 +10,7 @@ option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 option(ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer" OFF)
 option(ENABLE_PROFILING "Enable Tracy profiler integration" OFF)
 option(GOGGLES_DIAGNOSTICS_FORENSIC "Enable forensic diagnostics instrumentation" OFF)
+option(GOGGLES_FILTER_CHAIN_ENABLE_RENDERDOC_CAPTURE "Enable RenderDoc capture bridge" OFF)
 
 string(TOUPPER "${FILTER_CHAIN_LIBRARY_TYPE}" FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED)
 if(NOT FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED STREQUAL "STATIC" AND
@@ -48,6 +49,7 @@ add_library(fc_diagnostics_obj OBJECT
     src/diagnostics/test_harness_sink.cpp
     src/diagnostics/diagnostic_session.cpp
     src/diagnostics/gpu_timestamp_pool.cpp
+    src/diagnostics/diagnostic_report_json.cpp
 )
 if(GOGGLES_DIAGNOSTICS_FORENSIC)
     target_compile_definitions(fc_diagnostics_obj PUBLIC GOGGLES_DIAGNOSTICS_FORENSIC)
@@ -61,6 +63,32 @@ target_link_libraries(fc_diagnostics_obj PRIVATE
     spdlog::spdlog
 )
 goggles_enable_pic_if_shared(fc_diagnostics_obj)
+
+add_library(fc_capture_obj OBJECT
+    src/capture/runtime_capture.cpp
+    src/capture/renderdoc_bridge.cpp
+)
+target_include_directories(fc_capture_obj PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+target_include_directories(fc_capture_obj SYSTEM PRIVATE ${STB_IMAGE_INCLUDE_DIR})
+target_link_libraries(fc_capture_obj PRIVATE
+    Vulkan::Headers
+)
+if(GOGGLES_FILTER_CHAIN_ENABLE_RENDERDOC_CAPTURE)
+    find_path(RENDERDOC_INCLUDE_DIR renderdoc_app.h
+        HINTS /opt/renderdoc /usr/include /usr/local/include
+        PATHS ENV RENDERDOC_DIR
+    )
+    if(RENDERDOC_INCLUDE_DIR)
+        target_include_directories(fc_capture_obj SYSTEM PRIVATE ${RENDERDOC_INCLUDE_DIR})
+        target_compile_definitions(fc_capture_obj PRIVATE GOGGLES_FILTER_CHAIN_ENABLE_RENDERDOC_CAPTURE)
+    else()
+        message(WARNING "renderdoc_app.h not found; RenderDoc capture disabled")
+    endif()
+endif()
+goggles_enable_pic_if_shared(fc_capture_obj)
 
 add_library(fc_shader_obj OBJECT
     src/shader/shader_runtime.cpp
@@ -99,6 +127,12 @@ add_library(fc_stb_image_obj OBJECT
 )
 target_include_directories(fc_stb_image_obj SYSTEM PRIVATE ${STB_IMAGE_INCLUDE_DIR})
 goggles_enable_pic_if_shared(fc_stb_image_obj)
+
+add_library(fc_stb_image_write_obj OBJECT
+    src/texture/stb_image_write_impl.cpp
+)
+target_include_directories(fc_stb_image_write_obj SYSTEM PRIVATE ${STB_IMAGE_INCLUDE_DIR})
+goggles_enable_pic_if_shared(fc_stb_image_write_obj)
 
 set(FC_CHAIN_SOURCES
     src/chain/chain_runtime.cpp
@@ -216,6 +250,7 @@ goggles_enable_pic_if_shared(fc_api_obj)
 foreach(target_name IN ITEMS
         fc_support_obj
         fc_diagnostics_obj
+        fc_capture_obj
         fc_shader_obj
         fc_texture_obj
         fc_chain_obj
@@ -236,9 +271,11 @@ endforeach()
 add_library(goggles-filter-chain ${FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED}
     $<TARGET_OBJECTS:fc_support_obj>
     $<TARGET_OBJECTS:fc_diagnostics_obj>
+    $<TARGET_OBJECTS:fc_capture_obj>
     $<TARGET_OBJECTS:fc_shader_obj>
     $<TARGET_OBJECTS:fc_texture_obj>
     $<TARGET_OBJECTS:fc_stb_image_obj>
+    $<TARGET_OBJECTS:fc_stb_image_write_obj>
     $<TARGET_OBJECTS:fc_chain_obj>
     $<TARGET_OBJECTS:fc_runtime_obj>
     $<TARGET_OBJECTS:fc_api_obj>

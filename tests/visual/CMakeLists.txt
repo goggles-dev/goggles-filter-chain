@@ -6,7 +6,6 @@ target_include_directories(fc_test_stb_image_write_obj SYSTEM PRIVATE ${STB_IMAG
 
 add_library(fc_visual_support STATIC
     image_compare.cpp
-    runtime_capture.cpp
 )
 target_sources(fc_visual_support PRIVATE
     $<TARGET_OBJECTS:fc_test_stb_image_obj>

@@ -1,9 +1,9 @@
 #include "retroarch_preprocessor.hpp"
 
 #include "util/logging.hpp"
-#include <goggles/profiling.hpp>
 
 #include <fstream>
+#include <goggles/profiling.hpp>
 #include <optional>
 #include <regex>
 #include <sstream>

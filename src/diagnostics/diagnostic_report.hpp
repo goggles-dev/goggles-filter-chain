@@ -32,6 +32,11 @@ struct SemanticCoverageRow {
     uint32_t unresolved = 0;
 };
 
+struct CompileSummaryEntry {
+    uint32_t pass_ordinal = 0;
+    CompileEvidence evidence;
+};
+
 struct DiagnosticReport {
     CaptureMode reporting_mode = CaptureMode::standard;
     SessionIdentity session_identity;
@@ -39,7 +44,7 @@ struct DiagnosticReport {
     bool degraded = false;
     ErrorCountsByCategory error_counts_by_category;
     std::optional<ChainManifest> manifest;
-    std::vector<CompileEvidence> compile_summaries;
+    std::vector<CompileSummaryEntry> compile_summaries;
     std::vector<ReflectionEvidence> reflection_summaries;
     std::vector<BindingCoverageRow> binding_coverage;
     std::vector<SemanticCoverageRow> semantic_coverage;
@@ -144,7 +149,10 @@ struct DiagnosticReport {
 
     for (const auto& event : session.events()) {
         if (const auto* compile = std::get_if<CompileEvidence>(&event.evidence)) {
-            report.compile_summaries.push_back(*compile);
+            report.compile_summaries.push_back({
+                .pass_ordinal = event.localization.pass_ordinal,
+                .evidence = *compile,
+            });
         }
         if (const auto* reflection = std::get_if<ReflectionEvidence>(&event.evidence)) {
             report.reflection_summaries.push_back(*reflection);
