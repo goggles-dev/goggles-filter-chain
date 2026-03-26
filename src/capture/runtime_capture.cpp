@@ -9,6 +9,7 @@
 #include <chrono>
 #include <cstdint>
 #include <cstring>
+#include <numeric>
 #include <stb_image_write.h>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
@@ -735,6 +736,13 @@ auto capture_runtime_outputs(const RuntimeCapturePlan& plan) -> Result<RuntimeCa
     }
     auto runtime = std::move(*runtime_result);
 
+    auto effective_plan = plan;
+    if (plan.capture_all_passes && effective_plan.pass_ordinals.empty()) {
+        const auto count = runtime.runtime->pass_count();
+        effective_plan.pass_ordinals.resize(count);
+        std::iota(effective_plan.pass_ordinals.begin(), effective_plan.pass_ordinals.end(), 0U);
+    }
+
     if (plan.forensic_diagnostics) {
         diagnostics::DiagnosticPolicy policy;
         policy.capture_mode = diagnostics::CaptureMode::forensic;
@@ -778,7 +786,7 @@ auto capture_runtime_outputs(const RuntimeCapturePlan& plan) -> Result<RuntimeCa
         }
 
         const auto capture_result =
-            capture_requested_frame(result, runtime, fixture, plan, frame, target->image);
+            capture_requested_frame(result, runtime, fixture, effective_plan, frame, target->image);
         if (!capture_result) {
             return make_error<RuntimeCaptureResult>(capture_result.error().code,
                                                     capture_result.error().message,

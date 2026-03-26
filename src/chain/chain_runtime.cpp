@@ -459,6 +459,13 @@ auto ChainRuntime::diagnostic_session() const -> const diagnostics::DiagnosticSe
     return m_diagnostic_session.get();
 }
 
+auto ChainRuntime::pass_count() const -> uint32_t {
+    if (!m_resources) {
+        return 0U;
+    }
+    return static_cast<uint32_t>(m_resources->pass_count());
+}
+
 auto ChainRuntime::capture_pass_output(uint32_t pass_ordinal) const -> Result<CapturedImage> {
     if (!m_resources) {
         return make_error<CapturedImage>(ErrorCode::vulkan_init_failed,

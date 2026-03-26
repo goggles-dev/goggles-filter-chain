@@ -38,6 +38,9 @@ struct RuntimeCapturePlan {
     std::vector<uint8_t> source_pixels;
     // If true, create a forensic-mode diagnostic session for detailed reporting.
     bool forensic_diagnostics = false;
+    // If true, auto-discover pass count and capture all pass intermediates.
+    // Ignores pass_ordinals — populates them internally from the loaded preset.
+    bool capture_all_passes = false;
 };
 
 struct RuntimeCaptureResult {

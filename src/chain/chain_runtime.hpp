@@ -76,6 +76,7 @@ public:
     [[nodiscard]] auto diagnostic_session() -> diagnostics::DiagnosticSession*;
     [[nodiscard]] auto diagnostic_session() const -> const diagnostics::DiagnosticSession*;
     [[nodiscard]] auto capture_pass_output(uint32_t pass_ordinal) const -> Result<CapturedImage>;
+    [[nodiscard]] auto pass_count() const -> uint32_t;
 
 private:
     ChainRuntime() = default;
