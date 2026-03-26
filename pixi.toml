@@ -45,6 +45,14 @@ cmd = "semgrep scan --error --metrics=off --config .semgrep.yml include src test
 description = "Run Semgrep and the clang-tidy quality build"
 cmd = "bash scripts/task/static-analysis.sh"
 
+[tasks.shader-fetch]
+description = "Fetch upstream RetroArch shaders (sparse checkout)"
+cmd = "bash scripts/task/shader-fetch.sh"
+
+[tasks.update-golden]
+description = "Regenerate golden reference images (internal + upstream)"
+cmd = "bash scripts/task/update-golden.sh"
+
 [dependencies]
 cmake = "3.31.*"
 ninja = "1.12.*"

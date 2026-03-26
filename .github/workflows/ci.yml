@@ -73,6 +73,64 @@ jobs:
         if: always()
         run: pixi run ccache --show-stats
 
+  golden-verification:
+    name: golden-verification
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    env:
+      VK_ICD_FILENAMES: /usr/share/vulkan/icd.d/lvp_icd.x86_64.json
+      ASAN_OPTIONS: detect_leaks=0
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          cache: true
+          manifest-path: pixi.toml
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-fc-golden-ccache-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-fc-golden-ccache-${{ github.ref_name }}-
+            ${{ runner.os }}-fc-golden-ccache-main-
+            ${{ runner.os }}-fc-golden-ccache-
+          max-size: ${{ env.CCACHE_MAX_SIZE }}
+
+      - name: Configure ccache
+        run: |
+          pixi run ccache --set-config=max_size=${{ env.CCACHE_MAX_SIZE }}
+          pixi run ccache --set-config=compression=true
+          pixi run ccache --zero-stats
+
+      - name: Install lavapipe
+        run: sudo apt-get update && sudo apt-get install -y mesa-vulkan-drivers
+
+      - name: Fetch upstream shaders
+        run: pixi run shader-fetch
+
+      - name: Build (test preset)
+        run: pixi run build -p test
+
+      - name: Run golden verification
+        run: ctest --test-dir build/test -R 'fc_test_temporal_golden|fc_test_upstream_golden' --output-on-failure
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-diffs
+          path: |
+            build/test/tests/visual/*_diff.png
+            build/test/tests/visual/*_actual.png
+
+      - name: Show ccache statistics
+        if: always()
+        run: pixi run ccache --show-stats
+
   consumer-validation:
     name: consumer-validation
     runs-on: ubuntu-latest

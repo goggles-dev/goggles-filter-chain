@@ -12,6 +12,13 @@ option(ENABLE_PROFILING "Enable Tracy profiler integration" OFF)
 option(GOGGLES_DIAGNOSTICS_FORENSIC "Enable forensic diagnostics instrumentation" OFF)
 option(GOGGLES_FILTER_CHAIN_ENABLE_RENDERDOC_CAPTURE "Enable RenderDoc capture bridge" OFF)
 
+set(FC_UPSTREAM_SHADER_DIR "" CACHE PATH "Path to libretro/slang-shaders checkout for upstream golden tests")
+if(FC_UPSTREAM_SHADER_DIR STREQUAL "" AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/shaders/retroarch/crt")
+    set(FC_UPSTREAM_SHADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shaders/retroarch"
+        CACHE PATH "Path to libretro/slang-shaders checkout for upstream golden tests" FORCE)
+    message(STATUS "Auto-detected FC_UPSTREAM_SHADER_DIR: ${FC_UPSTREAM_SHADER_DIR}")
+endif()
+
 string(TOUPPER "${FILTER_CHAIN_LIBRARY_TYPE}" FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED)
 if(NOT FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED STREQUAL "STATIC" AND
    NOT FILTER_CHAIN_LIBRARY_TYPE_NORMALIZED STREQUAL "SHARED")
