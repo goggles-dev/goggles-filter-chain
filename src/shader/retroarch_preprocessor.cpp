@@ -113,9 +113,16 @@ auto fix_matrix_compare(const std::string& source) -> std::string {
     return output;
 }
 
+// Slang treats leading-zero digit sequences as octal — strip leading zeros from float literals
+auto fix_leading_zero_floats(const std::string& source) -> std::string {
+    static const std::regex LEADING_ZERO_FLOAT(R"(\b0+([1-9]\d*\.\d*))");
+    return std::regex_replace(source, LEADING_ZERO_FLOAT, "$1");
+}
+
 auto fix_slang_compat(const std::string& source) -> std::string {
     std::string result = fix_compound_assign(source);
     result = fix_matrix_compare(result);
+    result = fix_leading_zero_floats(result);
     return result;
 }
 

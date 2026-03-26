@@ -182,6 +182,10 @@ The stable diagnostics boundary is intentionally narrow:
 - public diagnostics-session lifecycle and pass capture are not part of the durable consumer boundary
 - capture-oriented seams remain standalone test support or transitional/internal surface, not promised package API
 
+## Debugging Shader Failures
+
+See [docs/diagnostics-guide.md](docs/diagnostics-guide.md) for a step-by-step guide to investigating preset failures using the `validate` and `diagnose` CLI commands. It covers the two diagnostic paths (compile-time vs. runtime), how to read the structured report output, and how to confirm fixes via golden verification.
+
 ## Repository Support
 
 Repository automation is split into `format-check`, `build-and-test`, `consumer-validation`, and `static-analysis` lanes. Use the issue templates in `.github/ISSUE_TEMPLATE/` to report runtime, packaging, consumer, or boundary issues.

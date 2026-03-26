@@ -7,6 +7,7 @@
 #include "vulkan_result.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <goggles/profiling.hpp>
 
@@ -119,6 +120,55 @@ auto create_readback_staging_buffer(vk::Device device, vk::PhysicalDevice physic
     };
 }
 
+auto format_bytes_per_pixel(vk::Format format) -> uint32_t {
+    switch (format) {
+    case vk::Format::eR8G8B8A8Unorm:
+    case vk::Format::eR8G8B8A8Srgb:
+    case vk::Format::eB8G8R8A8Unorm:
+    case vk::Format::eB8G8R8A8Srgb:
+    case vk::Format::eA2B10G10R10UnormPack32:
+        return 4;
+    case vk::Format::eR16G16B16A16Sfloat:
+        return 8;
+    case vk::Format::eR32G32B32A32Sfloat:
+        return 16;
+    default:
+        return 4;
+    }
+}
+
+auto half_to_float(uint16_t half) -> float {
+    uint32_t sign = (half >> 15U) & 1U;
+    uint32_t exp = (half >> 10U) & 0x1FU;
+    uint32_t mantissa = half & 0x3FFU;
+
+    if (exp == 0) {
+        if (mantissa == 0) {
+            uint32_t result = sign << 31U;
+            float f{};
+            std::memcpy(&f, &result, sizeof(f));
+            return f;
+        }
+        // Denormalized: normalize
+        while ((mantissa & 0x400U) == 0) {
+            mantissa <<= 1U;
+            exp--;
+        }
+        exp++;
+        mantissa &= ~0x400U;
+    } else if (exp == 31) {
+        uint32_t result = (sign << 31U) | 0x7F800000U | (mantissa << 13U);
+        float f{};
+        std::memcpy(&f, &result, sizeof(f));
+        return f;
+    }
+
+    uint32_t result = (sign << 31U) | ((exp + 112U) << 23U) | (mantissa << 13U);
+    float f{};
+    std::memcpy(&f, &result, sizeof(f));
+    return f;
+}
+
 void destroy_readback_staging_buffer(vk::Device device, ReadbackStagingBuffer& staging) {
     if (staging.memory) {
         device.freeMemory(staging.memory);
@@ -131,15 +181,17 @@ void destroy_readback_staging_buffer(vk::Device device, ReadbackStagingBuffer& s
 }
 
 auto capture_image_pixels(const VulkanContext& vk_ctx, vk::CommandPool command_pool,
-                          vk::Image image, vk::Extent2D extent, vk::ImageLayout current_layout)
+                          vk::Image image, vk::Extent2D extent, vk::Format format,
+                          vk::ImageLayout current_layout)
     -> Result<CapturedImage> {
     if (extent.width == 0 || extent.height == 0) {
         return make_error<CapturedImage>(ErrorCode::invalid_data,
                                          "Cannot capture zero-sized image");
     }
 
+    const auto bpp = format_bytes_per_pixel(format);
     const vk::DeviceSize buffer_size =
-        static_cast<vk::DeviceSize>(extent.width) * extent.height * 4;
+        static_cast<vk::DeviceSize>(extent.width) * extent.height * bpp;
     auto staging = GOGGLES_TRY(
         create_readback_staging_buffer(vk_ctx.device, vk_ctx.physical_device, buffer_size));
 
@@ -243,8 +295,27 @@ auto capture_image_pixels(const VulkanContext& vk_ctx, vk::CommandPool command_p
     CapturedImage captured{};
     captured.width = extent.width;
     captured.height = extent.height;
-    captured.rgba.resize(static_cast<size_t>(buffer_size));
-    std::memcpy(captured.rgba.data(), data, static_cast<size_t>(buffer_size));
+    const size_t pixel_count = static_cast<size_t>(extent.width) * extent.height;
+
+    if (format == vk::Format::eR16G16B16A16Sfloat) {
+        captured.rgba.resize(pixel_count * 4);
+        const auto* src = static_cast<const uint16_t*>(data);
+        for (size_t i = 0; i < pixel_count * 4; ++i) {
+            float value = std::clamp(half_to_float(src[i]), 0.0F, 1.0F);
+            captured.rgba[i] = static_cast<uint8_t>(std::lround(value * 255.0F));
+        }
+    } else if (format == vk::Format::eR32G32B32A32Sfloat) {
+        captured.rgba.resize(pixel_count * 4);
+        const auto* src = static_cast<const float*>(data);
+        for (size_t i = 0; i < pixel_count * 4; ++i) {
+            float value = std::clamp(src[i], 0.0F, 1.0F);
+            captured.rgba[i] = static_cast<uint8_t>(std::lround(value * 255.0F));
+        }
+    } else {
+        // RGBA8 and similar 4-bpp formats — direct copy
+        captured.rgba.resize(pixel_count * 4);
+        std::memcpy(captured.rgba.data(), data, pixel_count * 4);
+    }
 
     vk_ctx.device.unmapMemory(staging.memory);
     vk_ctx.device.destroyFence(fence);
@@ -481,6 +552,7 @@ auto ChainRuntime::capture_pass_output(uint32_t pass_ordinal) const -> Result<Ca
     const auto& framebuffer = m_resources->m_framebuffers[pass_ordinal];
     return capture_image_pixels(m_resources->m_vk_ctx, m_resources->command_pool(),
                                 framebuffer->image(), framebuffer->extent(),
+                                framebuffer->format(),
                                 vk::ImageLayout::eShaderReadOnlyOptimal);
 }
 

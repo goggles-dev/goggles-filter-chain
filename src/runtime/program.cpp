@@ -37,7 +37,6 @@ auto map_error_to_status(goggles::ErrorCode code) -> goggles_fc_status_t {
 }
 
 auto validate_preset_dependencies(const goggles::fc::PresetConfig& preset, SourceResolver& resolver,
-                                  const ResolvedSource& resolved,
                                   const goggles_fc_import_callbacks_t* import_callbacks)
     -> goggles::Result<void> {
     for (const auto& pass : preset.passes) {
@@ -45,7 +44,8 @@ auto validate_preset_dependencies(const goggles::fc::PresetConfig& preset, Sourc
             continue;
         }
 
-        auto shader_bytes = resolver.resolve_relative(resolved.base_path, pass.shader_path.string(),
+        auto shader_bytes = resolver.resolve_relative(pass.shader_path.parent_path(),
+                                                      pass.shader_path.filename().string(),
                                                       import_callbacks);
         if (!shader_bytes) {
             return goggles::make_error<void>(shader_bytes.error().code,
@@ -60,7 +60,8 @@ auto validate_preset_dependencies(const goggles::fc::PresetConfig& preset, Sourc
         }
 
         auto texture_bytes =
-            resolver.resolve_relative(resolved.base_path, texture.path.string(), import_callbacks);
+            resolver.resolve_relative(texture.path.parent_path(),
+                                      texture.path.filename().string(), import_callbacks);
         if (!texture_bytes) {
             return goggles::make_error<void>(texture_bytes.error().code,
                                              texture_bytes.error().message,
@@ -109,7 +110,7 @@ auto Program::create(Device* device, const goggles_fc_preset_source_t* source,
             *out_program = nullptr;
             return map_error_to_status(preset_result.error().code);
         }
-        auto dependency_status = validate_preset_dependencies(*preset_result, resolver, *resolved,
+        auto dependency_status = validate_preset_dependencies(*preset_result, resolver,
                                                               source->import_callbacks);
         if (!dependency_status) {
             GOGGLES_LOG_ERROR("Program::create: preset dependency validation failed: {}",

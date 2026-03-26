@@ -10,7 +10,7 @@ This directory contains standalone filter-chain golden PNGs for diagnostics-heav
 
 ## Upstream presets
 
-The `upstream/` directory contains golden images for 12 curated RetroArch presets, generated on lavapipe at 320x240 from `assets/test_pattern_240p.png`.
+The `upstream/` directory contains golden images for 14 curated RetroArch presets, generated on lavapipe at 320×240 from `assets/test_pattern_240p.png`.
 
 Regenerate with: `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json pixi run update-golden -p test`
 
@@ -18,11 +18,6 @@ Regenerate with: `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json p
 
 - `final_frame{N}.png` — final output for frame N (N = 0, 1, 2)
 - `pass_{ordinal}_frame{N}.png` — intermediate pass output
-
-### Presets not yet covered
-
-- `crt-royale-ntsc-svideo` — shader compilation error (ntsc-pass3 module)
-- `dual_filter_6_pass` — runtime crash (heap-buffer-overflow in chain execution)
 
 ## Ownership
 
