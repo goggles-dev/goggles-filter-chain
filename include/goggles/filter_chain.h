@@ -222,6 +222,7 @@ struct GogglesFcVkDeviceCreateInfo {
     VkQueue graphics_queue;
     uint32_t graphics_queue_family_index;
     goggles_fc_utf8_view_t cache_dir;
+    VkInstance instance; /* host's VkInstance; required to init the module dispatcher's physical-device tier */
 };
 
 #ifdef __cplusplus
@@ -324,6 +325,15 @@ typedef struct GogglesFcChainTargetInfo goggles_fc_chain_target_info_t;
 
 /* ── POD structs: Vulkan record info ─────────────────────────────────────── */
 
+/**
+ * @brief Per-frame Vulkan record descriptor for goggles_fc_chain_record_vk.
+ *
+ * Image layout precondition (caller-owned): before record, the source image must
+ * be in VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL and the target image (backing
+ * target_view) must be in VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL. The chain does
+ * NOT transition these layouts; it samples the source and renders into the target.
+ * After record, both images remain in those layouts unless the caller barriers them.
+ */
 struct GogglesFcRecordInfoVk {
     uint32_t struct_size;
     VkCommandBuffer command_buffer;
@@ -464,6 +474,7 @@ goggles_fc_vk_device_create_info_init(GOGGLES_FC_NOARGS) {
     value.graphics_queue_family_index = 0u;
     value.cache_dir.data = GOGGLES_FC_NULLPTR;
     value.cache_dir.size = 0u;
+    value.instance = VK_NULL_HANDLE;
     return value;
 }
 

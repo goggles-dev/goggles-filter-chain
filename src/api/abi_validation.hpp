@@ -198,8 +198,8 @@ validate_vk_device_create_info(const goggles_fc_vk_device_create_info_t* info)
     if (status != GOGGLES_FC_STATUS_OK) {
         return status;
     }
-    if (info->physical_device == VK_NULL_HANDLE || info->device == VK_NULL_HANDLE ||
-        info->graphics_queue == VK_NULL_HANDLE) {
+    if (info->instance == VK_NULL_HANDLE || info->physical_device == VK_NULL_HANDLE ||
+        info->device == VK_NULL_HANDLE || info->graphics_queue == VK_NULL_HANDLE) {
         return GOGGLES_FC_STATUS_INVALID_ARGUMENT;
     }
     if (!validate_utf8_view_optional(info->cache_dir)) {

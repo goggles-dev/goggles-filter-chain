@@ -4,6 +4,7 @@
 #include "util/logging.hpp"
 
 #include <new>
+#include <vulkan/vulkan.hpp>
 
 #define GOGGLES_LOG_TAG "render.runtime"
 
@@ -33,6 +34,21 @@ auto Device::create(Instance* instance, const goggles_fc_vk_device_create_info_t
     if (create_info->cache_dir.data != nullptr && create_info->cache_dir.size > 0) {
         device->m_cache_dir.assign(create_info->cache_dir.data, create_info->cache_dir.size);
     }
+
+    // FC-1: initialize THIS module's vulkan-hpp default dispatcher (filter-chain is a SHARED
+    // library with its own dispatcher storage, so the host's init does not carry over). The
+    // canonical 3 steps populate loader, instance/physical-device, and device tiers. The
+    // instance step is REQUIRED: filter-chain's setup path issues physical-device-level calls
+    // (getMemoryProperties/getProperties/getQueueFamilyProperties/getFormatProperties) which
+    // only the instance tier resolves. Repeated init with the same handles is safe.
+    if (create_info->instance == VK_NULL_HANDLE) {
+        delete device;
+        *out_device = nullptr;
+        return GOGGLES_FC_STATUS_INVALID_ARGUMENT;
+    }
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vk::Instance{create_info->instance});
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vk::Device{create_info->device});
 
     // Create owned setup/upload command pool from the borrowed VkDevice.
     VkCommandPoolCreateInfo pool_info{};
