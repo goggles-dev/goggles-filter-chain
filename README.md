@@ -57,6 +57,8 @@ target_link_libraries(your_target PRIVATE
 
 For installed-package validation examples, see `tests/consumer/` and `scripts/validate-installed-consumers.sh`.
 
+SHARED builds (`-DFILTER_CHAIN_LIBRARY_TYPE=SHARED`) carry a `$ORIGIN` RUNPATH so colocated private deps resolve without `LD_LIBRARY_PATH`. Pass `-DGOGGLES_FC_BUNDLE_RUNTIME_DEPS=ON` to copy those deps (slang family, spdlog, fmt) next to the built library for a self-contained runtime.
+
 ## CLI Tool
 
 `goggles-chain-cli` applies RetroArch shader presets to images offline and provides structured diagnostic tooling for CI. Built automatically with all standalone presets except `release`:

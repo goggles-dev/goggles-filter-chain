@@ -11,6 +11,8 @@ option(ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer" OFF)
 option(ENABLE_PROFILING "Enable Tracy profiler integration" OFF)
 option(GOGGLES_DIAGNOSTICS_FORENSIC "Enable forensic diagnostics instrumentation" OFF)
 option(GOGGLES_FILTER_CHAIN_ENABLE_RENDERDOC_CAPTURE "Enable RenderDoc capture bridge" OFF)
+option(GOGGLES_FC_BUNDLE_RUNTIME_DEPS
+    "For SHARED builds, copy private runtime deps (slang family, spdlog, fmt) next to the built .so" OFF)
 
 set(FC_UPSTREAM_SHADER_DIR "" CACHE PATH "Path to libretro/slang-shaders checkout for upstream golden tests")
 if(FC_UPSTREAM_SHADER_DIR STREQUAL "" AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/shaders/retroarch/crt")
@@ -28,6 +30,7 @@ endif()
 
 include(cmake/CompilerConfig.cmake)
 include(cmake/CodeQuality.cmake)
+include(cmake/SharedRuntime.cmake)
 set(GOGGLES_FILTER_CHAIN_FIND_PRIVATE_DEPS ON)
 include(cmake/FilterChainDependencies.cmake)
 unset(GOGGLES_FILTER_CHAIN_FIND_PRIVATE_DEPS)
@@ -318,6 +321,13 @@ target_link_libraries(goggles-filter-chain
 )
 
 goggles_enable_clang_tidy(goggles-filter-chain)
+
+# Make the SHARED artifact self-contained: $ORIGIN RUNPATH, plus optional
+# colocation of its private runtime deps. No-op for STATIC.
+goggles_fc_apply_origin_runpath(goggles-filter-chain)
+if(GOGGLES_FC_BUNDLE_RUNTIME_DEPS)
+    goggles_fc_bundle_runtime_deps(goggles-filter-chain)
+endif()
 
 if(NOT TARGET GogglesFilterChain::goggles-filter-chain)
     add_library(GogglesFilterChain::goggles-filter-chain ALIAS goggles-filter-chain)
